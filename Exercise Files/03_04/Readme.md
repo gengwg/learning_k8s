@@ -63,7 +63,58 @@ deployment.apps/helloworld   1/1     1            1           99s
 NAME                                    DESIRED   CURRENT   READY   AGE
 replicaset.apps/helloworld-7cf6df685c   1         1         1       99s
 $ 
+```
 
+
+Local test:
+
+```
+~/learning_k8s/Exercise Files/03_04$ kubectl get all
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   22m
+~/learning_k8s/Exercise Files/03_04$ kubectl create -f helloworld.yaml
+deployment.apps/helloworld created
+~/learning_k8s/Exercise Files/03_04$ kubectl get all
+NAME                              READY   STATUS              RESTARTS   AGE
+pod/helloworld-66f646b9bb-lr5ht   0/1     ContainerCreating   0          3s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   22m
+
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helloworld   0/1     1            0           3s
+
+NAME                                    DESIRED   CURRENT   READY   AGE
+replicaset.apps/helloworld-66f646b9bb   1         1         0       3s
+~/learning_k8s/Exercise Files/03_04$ kubectl expose deployment helloworld --type=NodePort
+service/helloworld exposed
+~/learning_k8s/Exercise Files/03_04$ kubectl get all
+NAME                              READY   STATUS    RESTARTS   AGE
+pod/helloworld-66f646b9bb-lr5ht   1/1     Running   0          7m45s
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+service/helloworld   NodePort    10.97.187.95   <none>        80:32199/TCP   28s
+service/kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP        30m
+
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helloworld   1/1     1            1           7m45s
+
+NAME                                    DESIRED   CURRENT   READY   AGE
+replicaset.apps/helloworld-66f646b9bb   1         1         1       7m45s
+~/learning_k8s/Exercise Files/03_04$ minikube service helloworld
+|-----------|------------|-------------|---------------------------|
+| NAMESPACE |    NAME    | TARGET PORT |            URL            |
+|-----------|------------|-------------|---------------------------|
+| default   | helloworld |          80 | http://192.168.49.2:32199 |
+|-----------|------------|-------------|---------------------------|
+🏃  Starting tunnel for service helloworld.
+|-----------|------------|-------------|------------------------|
+| NAMESPACE |    NAME    | TARGET PORT |          URL           |
+|-----------|------------|-------------|------------------------|
+| default   | helloworld |             | http://127.0.0.1:64392 |
+|-----------|------------|-------------|------------------------|
+🎉  Opening service default/helloworld in default browser...
+❗  Because you are using a Docker driver on darwin, the terminal needs to be open to run it.
 ```
 
 ### Setting up a load balancer
